@@ -266,10 +266,21 @@
     </div>
     <div class="set-sec">콜라주</div>
     <div class="set-row">
-      <div><div class="t">워터마크 표시</div><div class="d">콜라주 하단 로고</div></div>
-      <span class="lock">유료에서 해제</span>
+      <div><div class="t">워터마크 표시</div><div class="d">콜라주 하단 로고 · 끄기는 Pro 전용</div></div>
+      <button class="toggle on" id="tglWm" aria-label="워터마크 표시"></button>
     </div>
     <div class="btn-row"><button class="btn primary" id="btnSettingsClose">닫기</button></div>
+  </div>
+</div>
+
+<div class="sheet" id="proSheet">
+  <div class="sheet-inner">
+    <h2>REFER CAM Pro</h2>
+    <p class="hint pro-msg" style="margin-top:6px;">워터마크 제거는 Pro에서 가능해요.</p>
+    <div class="btn-row">
+      <button class="btn" id="btnProClose">닫기</button>
+      <button class="btn primary" id="btnProUpgrade">Pro 시작하기</button>
+    </div>
   </div>
 </div>
 
@@ -387,8 +398,9 @@ const STR = {
   'theme.dark':       { ko: '다크', en: 'Dark' },
   'theme.light':      { ko: '라이트', en: 'Light' },
   'set.wm':           { ko: '워터마크 표시', en: 'Show watermark' },
-  'set.wmD':          { ko: '콜라주 하단 로고', en: 'Logo at the bottom of collages' },
-  'set.wmLock':       { ko: '유료에서 해제', en: 'Remove in Pro' },
+  'set.wmD':          { ko: '콜라주 하단 로고 · 끄기는 Pro 전용', en: 'Logo at the bottom of collages · Turn off with Pro' },
+  'pro.wmMsg':        { ko: '워터마크 제거는 Pro에서 가능해요.', en: 'Removing the watermark is available in Pro.' },
+  'pro.upgrade':      { ko: 'Pro 시작하기', en: 'Get Pro' },
   'result.title':     { ko: '콜라주 완성', en: 'Collage ready' },
   'result.layout':    { ko: '방향', en: 'Layout' },
   'result.portrait':  { ko: '세로', en: 'Portrait' },
@@ -481,8 +493,11 @@ function applyI18n() {
   document.querySelectorAll('#langSeg button').forEach(b => b.classList.toggle('on', b.dataset.lang === LANG));
   set('#settingsSheet .set-row .t', 'set.wm', 'text', 4);
   set('#settingsSheet .set-row .d', 'set.wmD', 'text', 4);
-  set('#settingsSheet .lock', 'set.wmLock');
+  set('#tglWm', 'set.wm', 'aria-label');
   set('#btnSettingsClose', 'btn.close');
+  set('#proSheet .pro-msg', 'pro.wmMsg');
+  set('#btnProClose', 'btn.close');
+  set('#btnProUpgrade', 'pro.upgrade');
   set('#resultSheet h2', 'result.title');
   set('#collRatioRow .lb', 'result.layout');
   set('#orP', 'result.portrait');
@@ -748,7 +763,7 @@ function makeCollage(shotCanvas) {
     drawCover(ctx, shotCanvas, shotCanvas.width, shotCanvas.height, M*2 + pw, M, pw, ph);
   }
   const inset = Math.max(M, 28);
-  drawBeadmark(ctx, W - inset, H - inset);
+  if (showWm) drawBeadmark(ctx, W - inset, H - inset);
   $('resultSheet').classList.add('open');
 }
 
@@ -812,6 +827,30 @@ function applyLang(l) {
   renderBoard();
 }
 $('langSeg').querySelectorAll('button').forEach(b => { b.onclick = () => applyLang(b.dataset.lang); });
+
+/* 워터마크: 무료는 항상 켜짐, 끄려고 하면 Pro 안내. (프로토타입: Pro 시작하기 = 결제된 셈) */
+let isPro = false, showWm = true;
+try {
+  isPro = localStorage.getItem('refercam_pro') === '1';
+  if (isPro) showWm = localStorage.getItem('refercam_wm') !== '0';
+} catch (e) {}
+$('tglWm').classList.toggle('on', showWm);
+function setWm(on) {
+  showWm = on;
+  $('tglWm').classList.toggle('on', on);
+  try { localStorage.setItem('refercam_wm', on ? '1' : '0'); } catch (e) {}
+}
+$('tglWm').onclick = () => {
+  if (!isPro && showWm) { $('proSheet').classList.add('open'); return; }
+  setWm(!showWm);
+};
+$('btnProClose').onclick = () => $('proSheet').classList.remove('open');
+$('btnProUpgrade').onclick = () => {
+  isPro = true;
+  try { localStorage.setItem('refercam_pro', '1'); } catch (e) {}
+  $('proSheet').classList.remove('open');
+  setWm(false);
+};
 
 function bindChips(rowId, onPick) {
   $(rowId).querySelectorAll('.chip').forEach(ch => {
