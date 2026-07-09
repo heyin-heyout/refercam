@@ -21,6 +21,16 @@
   .seg button { border: 0; background: transparent; color: var(--mut); font-size: 11px; padding: 5px 10px; border-radius: 999px; white-space: nowrap; }
   .seg button.on { background: var(--inv-bg); color: var(--inv-fg); font-weight: 600; }
   .mini { border: 1px solid var(--line); background: transparent; color: var(--fg); padding: 6px 9px; border-radius: 10px; display: inline-flex; align-items: center; }
+  .mini svg { flex-shrink: 0; }
+  @media (max-width: 400px) {
+    .topbar { padding: 10px 10px; gap: 6px; }
+    .topbar .title { gap: 2px; }
+    .bead { width: 15px; height: 15px; font-size: 10px; border-radius: 5px; }
+    .bead.sp { width: 4px; }
+    .seg button { font-size: 10px; padding: 4px 7px; }
+    .mini { padding: 5px 6px; border-radius: 8px; }
+    .mini svg { width: 18px; height: 18px; }
+  }
 
   .stage-outer { flex: 1; display: flex; align-items: center; justify-content: center; margin: 0 12px; min-height: 0; }
   .stage { position: relative; border-radius: 18px; overflow: hidden; background: #17171a; flex-shrink: 0; }
