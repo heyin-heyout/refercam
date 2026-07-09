@@ -24,6 +24,7 @@
   .pro-badge .pb.b { background: #1b1a16; color: #f7f7f4; border: 1px solid rgba(255,255,255,0.45); transform: rotate(5deg); }
   body.light .pro-badge .pb.w { border: 1px solid rgba(0,0,0,0.16); }
   body.light .pro-badge .pb.b { border-color: transparent; }
+  .pro-badge.inline { position: static; margin-left: 7px; transform: rotate(0deg); vertical-align: -1px; }
   .seg { display: flex; background: var(--seg); border-radius: 999px; padding: 2px; }
   .seg button { border: 0; background: transparent; color: var(--mut); font-size: 11px; padding: 5px 10px; border-radius: 999px; white-space: nowrap; }
   .seg button.on { background: var(--inv-bg); color: var(--inv-fg); font-weight: 600; }
@@ -287,7 +288,7 @@
     </div>
     <div class="set-sec">콜라주</div>
     <div class="set-row">
-      <div><div class="t">워터마크 표시</div><div class="d">콜라주 하단 로고 · 끄기는 Pro 전용</div></div>
+      <div><div class="t"><span class="wm-t-label">워터마크 표시</span><span class="pro-badge inline hidden" id="wmProBadge"><span class="pb w">P</span><span class="pb b">R</span><span class="pb w">O</span></span></div><div class="d wm-d">콜라주 하단 로고 · 끄기는 Pro 전용</div></div>
       <button class="toggle on" id="tglWm" aria-label="워터마크 표시"></button>
     </div>
     <div class="btn-row"><button class="btn primary" id="btnSettingsClose">닫기</button></div>
@@ -440,6 +441,7 @@ const STR = {
   'theme.light':      { ko: '라이트', en: 'Light' },
   'set.wm':           { ko: '워터마크 표시', en: 'Show watermark' },
   'set.wmD':          { ko: '콜라주 하단 로고 · 끄기는 Pro 전용', en: 'Logo at the bottom of collages · Turn off with Pro' },
+  'set.wmDPro':       { ko: '콜라주 하단 로고 · Pro에서 자유롭게 켜고 끄기', en: 'Logo at the bottom of collages · Toggle freely with Pro' },
   'pro.wmMsg':        { ko: '워터마크 제거는 Pro에서 가능해요.', en: 'Removing the watermark is available in Pro.' },
   'pro.upgrade':      { ko: 'Pro 시작하기', en: 'Get Pro' },
   'pay.cancel':       { ko: '취소', en: 'Cancel' },
@@ -541,8 +543,8 @@ function applyI18n() {
   set('#settingsSheet .set-row .t', 'set.lang', 'text', 3);
   set('#settingsSheet .set-row .d', 'set.langD', 'text', 3);
   document.querySelectorAll('#langSeg button').forEach(b => b.classList.toggle('on', b.dataset.lang === LANG));
-  set('#settingsSheet .set-row .t', 'set.wm', 'text', 4);
-  set('#settingsSheet .set-row .d', 'set.wmD', 'text', 4);
+  set('#settingsSheet .wm-t-label', 'set.wm');
+  set('#settingsSheet .wm-d', 'set.wmD');
   set('#tglWm', 'set.wm', 'aria-label');
   set('#btnSettingsClose', 'btn.close');
   set('#proSheet .pro-msg', 'pro.wmMsg');
@@ -898,6 +900,7 @@ function applyLang(l) {
   try { localStorage.setItem('refercam_lang', l); } catch (e) {}
   applyI18n();
   renderBoard();
+  updateProUI();
 }
 $('langSeg').querySelectorAll('button').forEach(b => { b.onclick = () => applyLang(b.dataset.lang); });
 
@@ -908,7 +911,12 @@ try {
   if (isPro) showWm = localStorage.getItem('refercam_wm') !== '0';
 } catch (e) {}
 $('tglWm').classList.toggle('on', showWm);
-$('proBadge').classList.toggle('hidden', !isPro);
+function updateProUI() {
+  $('proBadge').classList.toggle('hidden', !isPro);
+  $('wmProBadge').classList.toggle('hidden', !isPro);
+  $('settingsSheet').querySelector('.wm-d').textContent = t(isPro ? 'set.wmDPro' : 'set.wmD');
+}
+updateProUI();
 function setWm(on) {
   showWm = on;
   $('tglWm').classList.toggle('on', on);
@@ -932,7 +940,7 @@ $('btnIosPay').onclick = () => {
       b.disabled = false; b.textContent = t('pay.btn');
       isPro = true;
       try { localStorage.setItem('refercam_pro', '1'); } catch (e) {}
-      $('proBadge').classList.toggle('hidden', false);
+      updateProUI();
       setWm(false);
     }, 600);
   }, 800);
