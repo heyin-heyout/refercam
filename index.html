@@ -17,6 +17,14 @@
   .bead { width: 19px; height: 19px; background: #f7f7f4; color: #111; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-family: "Baloo 2", sans-serif; font-weight: 800; font-size: 12px; box-shadow: inset 0 -2.5px 0 rgba(0,0,0,0.18); transform: rotate(var(--tilt, 0deg)); }
   .bead.sp { background: transparent; box-shadow: none; width: 5px; border: 0; }
   body.light .bead { border: 1px solid rgba(0,0,0,0.14); }
+  .topbar .title { position: relative; }
+  .pro-badge { position: absolute; top: -9px; right: -8px; display: inline-flex; gap: 2px; transform: rotate(7deg); pointer-events: none; }
+  .pro-badge .pb { width: 13px; height: 13px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; font-family: "Baloo 2", sans-serif; font-weight: 800; font-size: 8px; box-shadow: inset 0 -1.5px 0 rgba(0,0,0,0.18); }
+  .pro-badge .pb.w { background: #f7f7f4; color: #111; transform: rotate(-7deg); }
+  .pro-badge .pb.b { background: #1b1a16; color: #f7f7f4; border: 1px solid rgba(255,255,255,0.45); transform: rotate(5deg); }
+  body.light .pro-badge .pb.w { border: 1px solid rgba(0,0,0,0.16); }
+  body.light .pro-badge .pb.b { border-color: transparent; }
+  .pro-badge.inline { position: static; margin-left: 7px; transform: rotate(0deg); vertical-align: -1px; }
   .seg { display: flex; background: var(--seg); border-radius: 999px; padding: 2px; }
   .seg button { border: 0; background: transparent; color: var(--mut); font-size: 11px; padding: 5px 10px; border-radius: 999px; white-space: nowrap; }
   .seg button.on { background: var(--inv-bg); color: var(--inv-fg); font-weight: 600; }
@@ -108,6 +116,20 @@
   .btn { flex: 1; padding: 13px 0; border-radius: 12px; border: 1px solid var(--line); background: transparent; color: var(--fg); font-size: 14px; }
   .btn.primary { background: var(--inv-bg); color: var(--inv-fg); border-color: transparent; font-weight: 600; }
   .hint { font-size: 12px; color: var(--mut2); margin-top: 12px; line-height: 1.6; }
+  .ios-pay { width: 100%; max-width: 430px; background: var(--sheet); border-radius: 20px 20px 0 0; padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
+  .ios-pay-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--line-softer); }
+  .ios-pay-store { font-weight: 700; font-size: 15px; }
+  .ios-pay-cancel { border: 0; background: transparent; color: #0a84ff; font-size: 15px; }
+  .ios-pay-app { display: flex; gap: 12px; align-items: center; padding: 16px 18px 12px; }
+  .ios-pay-icon { width: 44px; height: 44px; border-radius: 10px; background: #f7f7f4; color: #111; display: flex; align-items: center; justify-content: center; font-family: "Baloo 2", sans-serif; font-weight: 800; font-size: 22px; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.18); flex-shrink: 0; }
+  body.light .ios-pay-icon { border: 1px solid rgba(0,0,0,0.14); }
+  .ios-pay-name { font-size: 15px; font-weight: 600; }
+  .ios-pay-sub { font-size: 12px; color: var(--mut2); margin-top: 2px; }
+  .ios-pay-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--mut); padding: 10px 18px; border-top: 1px solid var(--line-softer); }
+  .ios-pay-row b { color: var(--fg); font-weight: 600; }
+  .ios-pay-btn { display: block; width: calc(100% - 36px); margin: 16px 18px 0; padding: 14px 0; border: 0; border-radius: 12px; background: #0a84ff; color: #fff; font-size: 15px; font-weight: 600; }
+  .ios-pay-btn:disabled { opacity: 0.75; }
+  .ios-pay-note { font-size: 11px; color: var(--mut2); text-align: center; margin-top: 10px; }
   .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .grid img { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 10px; border: 2px solid transparent; }
   .grid img.sel { border-color: #f2b544; }
@@ -123,7 +145,7 @@
 <body>
 <div id="app">
   <div class="topbar">
-    <span class="title" aria-label="REFER CAM"><span class="bead" style="--tilt:-3deg">R</span><span class="bead" style="--tilt:2deg">E</span><span class="bead" style="--tilt:-2deg">F</span><span class="bead" style="--tilt:3deg">E</span><span class="bead" style="--tilt:-1deg">R</span><span class="bead sp"></span><span class="bead" style="--tilt:2deg">C</span><span class="bead" style="--tilt:-3deg">A</span><span class="bead" style="--tilt:1deg">M</span></span>
+    <span class="title" aria-label="REFER CAM"><span class="bead" style="--tilt:-3deg">R</span><span class="bead" style="--tilt:2deg">E</span><span class="bead" style="--tilt:-2deg">F</span><span class="bead" style="--tilt:3deg">E</span><span class="bead" style="--tilt:-1deg">R</span><span class="bead sp"></span><span class="bead" style="--tilt:2deg">C</span><span class="bead" style="--tilt:-3deg">A</span><span class="bead" style="--tilt:1deg">M</span><span class="pro-badge hidden" id="proBadge"><span class="pb w">P</span><span class="pb b">R</span><span class="pb w">O</span></span></span>
     <div class="seg" id="shootMode">
       <button id="modeInstant" class="on">바로 콜라주</button>
       <button id="modeBurst">연속 촬영</button>
@@ -266,10 +288,41 @@
     </div>
     <div class="set-sec">콜라주</div>
     <div class="set-row">
-      <div><div class="t">워터마크 표시</div><div class="d">콜라주 하단 로고</div></div>
-      <span class="lock">유료에서 해제</span>
+      <div><div class="t"><span class="wm-t-label">워터마크 표시</span><span class="pro-badge inline hidden" id="wmProBadge"><span class="pb w">P</span><span class="pb b">R</span><span class="pb w">O</span></span></div><div class="d wm-d">콜라주 하단 로고 · 끄기는 Pro 전용</div></div>
+      <button class="toggle on" id="tglWm" aria-label="워터마크 표시"></button>
     </div>
     <div class="btn-row"><button class="btn primary" id="btnSettingsClose">닫기</button></div>
+  </div>
+</div>
+
+<div class="sheet" id="proSheet">
+  <div class="sheet-inner">
+    <h2>REFER CAM Pro</h2>
+    <p class="hint pro-msg" style="margin-top:6px;">워터마크 제거는 Pro에서 가능해요.</p>
+    <div class="btn-row">
+      <button class="btn" id="btnProClose">닫기</button>
+      <button class="btn primary" id="btnProUpgrade">Pro 시작하기</button>
+    </div>
+  </div>
+</div>
+
+<div class="sheet" id="iosPaySheet">
+  <div class="ios-pay">
+    <div class="ios-pay-head">
+      <span class="ios-pay-store">App Store</span>
+      <button class="ios-pay-cancel" id="btnIosCancel">취소</button>
+    </div>
+    <div class="ios-pay-app">
+      <div class="ios-pay-icon">R</div>
+      <div>
+        <div class="ios-pay-name">REFER CAM Pro</div>
+        <div class="ios-pay-sub">월간 구독 · 언제든 해지 가능</div>
+      </div>
+    </div>
+    <div class="ios-pay-row"><span class="pay-account-lb">계정</span><b>hey•••@icloud.com</b></div>
+    <div class="ios-pay-row"><span class="pay-price-lb">가격</span><b class="pay-price-v">₩3,900/월</b></div>
+    <button class="ios-pay-btn" id="btnIosPay">구독하기</button>
+    <p class="ios-pay-note">프로토타입 화면이라 실제 결제는 되지 않아요.</p>
   </div>
 </div>
 
@@ -387,8 +440,19 @@ const STR = {
   'theme.dark':       { ko: '다크', en: 'Dark' },
   'theme.light':      { ko: '라이트', en: 'Light' },
   'set.wm':           { ko: '워터마크 표시', en: 'Show watermark' },
-  'set.wmD':          { ko: '콜라주 하단 로고', en: 'Logo at the bottom of collages' },
-  'set.wmLock':       { ko: '유료에서 해제', en: 'Remove in Pro' },
+  'set.wmD':          { ko: '콜라주 하단 로고 · 끄기는 Pro 전용', en: 'Logo at the bottom of collages · Turn off with Pro' },
+  'set.wmDPro':       { ko: '콜라주 하단 로고 · Pro에서 자유롭게 켜고 끄기', en: 'Logo at the bottom of collages · Toggle freely with Pro' },
+  'pro.wmMsg':        { ko: '워터마크 제거는 Pro에서 가능해요.', en: 'Removing the watermark is available in Pro.' },
+  'pro.upgrade':      { ko: 'Pro 시작하기', en: 'Get Pro' },
+  'pay.cancel':       { ko: '취소', en: 'Cancel' },
+  'pay.sub':          { ko: '월간 구독 · 언제든 해지 가능', en: 'Monthly · Cancel anytime' },
+  'pay.account':      { ko: '계정', en: 'Account' },
+  'pay.price':        { ko: '가격', en: 'Price' },
+  'pay.priceV':       { ko: '₩3,900/월', en: '$2.99/mo' },
+  'pay.btn':          { ko: '구독하기', en: 'Subscribe' },
+  'pay.processing':   { ko: '처리 중…', en: 'Processing…' },
+  'pay.done':         { ko: '완료', en: 'Done' },
+  'pay.note':         { ko: '프로토타입 화면이라 실제 결제는 되지 않아요.', en: 'Prototype only — no real charge.' },
   'result.title':     { ko: '콜라주 완성', en: 'Collage ready' },
   'result.layout':    { ko: '방향', en: 'Layout' },
   'result.portrait':  { ko: '세로', en: 'Portrait' },
@@ -479,10 +543,20 @@ function applyI18n() {
   set('#settingsSheet .set-row .t', 'set.lang', 'text', 3);
   set('#settingsSheet .set-row .d', 'set.langD', 'text', 3);
   document.querySelectorAll('#langSeg button').forEach(b => b.classList.toggle('on', b.dataset.lang === LANG));
-  set('#settingsSheet .set-row .t', 'set.wm', 'text', 4);
-  set('#settingsSheet .set-row .d', 'set.wmD', 'text', 4);
-  set('#settingsSheet .lock', 'set.wmLock');
+  set('#settingsSheet .wm-t-label', 'set.wm');
+  set('#settingsSheet .wm-d', 'set.wmD');
+  set('#tglWm', 'set.wm', 'aria-label');
   set('#btnSettingsClose', 'btn.close');
+  set('#proSheet .pro-msg', 'pro.wmMsg');
+  set('#btnProClose', 'btn.close');
+  set('#btnProUpgrade', 'pro.upgrade');
+  set('#btnIosCancel', 'pay.cancel');
+  set('#iosPaySheet .ios-pay-sub', 'pay.sub');
+  set('#iosPaySheet .pay-account-lb', 'pay.account');
+  set('#iosPaySheet .pay-price-lb', 'pay.price');
+  set('#iosPaySheet .pay-price-v', 'pay.priceV');
+  set('#btnIosPay', 'pay.btn');
+  set('#iosPaySheet .ios-pay-note', 'pay.note');
   set('#resultSheet h2', 'result.title');
   set('#collRatioRow .lb', 'result.layout');
   set('#orP', 'result.portrait');
@@ -722,6 +796,22 @@ function drawBeadmark(ctx, right, baseY) {
   ctx.restore();
 }
 
+/* 원본 저장용: 사진 크기에 맞춰 워터마크를 찍은 복사본을 돌려줌 (워터마크 꺼짐이면 원본 그대로) */
+function stampWm(canvas) {
+  if (!showWm) return canvas;
+  const c = document.createElement('canvas');
+  c.width = canvas.width; c.height = canvas.height;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(canvas, 0, 0);
+  const s = Math.max(0.5, Math.min(c.width, c.height) / 1080);
+  const inset = 28 * s;
+  ctx.save();
+  ctx.scale(s, s);
+  drawBeadmark(ctx, (c.width - inset) / s, (c.height - inset) / s);
+  ctx.restore();
+  return c;
+}
+
 function makeCollage(shotCanvas) {
   lastShot = shotCanvas;
   const r = collRatio.w / collRatio.h;
@@ -748,7 +838,7 @@ function makeCollage(shotCanvas) {
     drawCover(ctx, shotCanvas, shotCanvas.width, shotCanvas.height, M*2 + pw, M, pw, ph);
   }
   const inset = Math.max(M, 28);
-  drawBeadmark(ctx, W - inset, H - inset);
+  if (showWm) drawBeadmark(ctx, W - inset, H - inset);
   $('resultSheet').classList.add('open');
 }
 
@@ -810,8 +900,51 @@ function applyLang(l) {
   try { localStorage.setItem('refercam_lang', l); } catch (e) {}
   applyI18n();
   renderBoard();
+  updateProUI();
 }
 $('langSeg').querySelectorAll('button').forEach(b => { b.onclick = () => applyLang(b.dataset.lang); });
+
+/* 워터마크: 무료는 항상 켜짐, 끄려고 하면 Pro 안내. (프로토타입: Pro 시작하기 = 결제된 셈) */
+let isPro = false, showWm = true;
+try {
+  isPro = localStorage.getItem('refercam_pro') === '1';
+  if (isPro) showWm = localStorage.getItem('refercam_wm') !== '0';
+} catch (e) {}
+$('tglWm').classList.toggle('on', showWm);
+function updateProUI() {
+  $('proBadge').classList.toggle('hidden', !isPro);
+  $('wmProBadge').classList.toggle('hidden', !isPro);
+  $('settingsSheet').querySelector('.wm-d').textContent = t(isPro ? 'set.wmDPro' : 'set.wmD');
+}
+updateProUI();
+function setWm(on) {
+  showWm = on;
+  $('tglWm').classList.toggle('on', on);
+  try { localStorage.setItem('refercam_wm', on ? '1' : '0'); } catch (e) {}
+}
+$('tglWm').onclick = () => {
+  if (!isPro && showWm) { $('proSheet').classList.add('open'); return; }
+  setWm(!showWm);
+};
+$('btnProClose').onclick = () => $('proSheet').classList.remove('open');
+$('btnProUpgrade').onclick = () => $('iosPaySheet').classList.add('open');
+$('btnIosCancel').onclick = () => $('iosPaySheet').classList.remove('open');
+$('btnIosPay').onclick = () => {
+  const b = $('btnIosPay');
+  b.disabled = true; b.textContent = t('pay.processing');
+  setTimeout(() => {
+    b.textContent = '✓ ' + t('pay.done');
+    setTimeout(() => {
+      $('iosPaySheet').classList.remove('open');
+      $('proSheet').classList.remove('open');
+      b.disabled = false; b.textContent = t('pay.btn');
+      isPro = true;
+      try { localStorage.setItem('refercam_pro', '1'); } catch (e) {}
+      updateProUI();
+      setWm(false);
+    }, 600);
+  }, 800);
+};
 
 function bindChips(rowId, onPick) {
   $(rowId).querySelectorAll('.chip').forEach(ch => {
@@ -1007,7 +1140,7 @@ $('btnSaveOrig').onclick = () => {
   if (!lastShot) return;
   const a = document.createElement('a');
   a.download = 'refercam_shot.jpg';
-  a.href = lastShot.toDataURL('image/jpeg', 0.95);
+  a.href = stampWm(lastShot).toDataURL('image/jpeg', 0.95);
   a.click();
 };
 
