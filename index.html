@@ -17,6 +17,13 @@
   .bead { width: 19px; height: 19px; background: #f7f7f4; color: #111; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-family: "Baloo 2", sans-serif; font-weight: 800; font-size: 12px; box-shadow: inset 0 -2.5px 0 rgba(0,0,0,0.18); transform: rotate(var(--tilt, 0deg)); }
   .bead.sp { background: transparent; box-shadow: none; width: 5px; border: 0; }
   body.light .bead { border: 1px solid rgba(0,0,0,0.14); }
+  .topbar .title { position: relative; }
+  .pro-badge { position: absolute; top: -9px; right: -8px; display: inline-flex; gap: 2px; transform: rotate(7deg); pointer-events: none; }
+  .pro-badge .pb { width: 13px; height: 13px; border-radius: 4px; display: inline-flex; align-items: center; justify-content: center; font-family: "Baloo 2", sans-serif; font-weight: 800; font-size: 8px; box-shadow: inset 0 -1.5px 0 rgba(0,0,0,0.18); }
+  .pro-badge .pb.w { background: #f7f7f4; color: #111; transform: rotate(-7deg); }
+  .pro-badge .pb.b { background: #1b1a16; color: #f7f7f4; border: 1px solid rgba(255,255,255,0.45); transform: rotate(5deg); }
+  body.light .pro-badge .pb.w { border: 1px solid rgba(0,0,0,0.16); }
+  body.light .pro-badge .pb.b { border-color: transparent; }
   .seg { display: flex; background: var(--seg); border-radius: 999px; padding: 2px; }
   .seg button { border: 0; background: transparent; color: var(--mut); font-size: 11px; padding: 5px 10px; border-radius: 999px; white-space: nowrap; }
   .seg button.on { background: var(--inv-bg); color: var(--inv-fg); font-weight: 600; }
@@ -137,7 +144,7 @@
 <body>
 <div id="app">
   <div class="topbar">
-    <span class="title" aria-label="REFER CAM"><span class="bead" style="--tilt:-3deg">R</span><span class="bead" style="--tilt:2deg">E</span><span class="bead" style="--tilt:-2deg">F</span><span class="bead" style="--tilt:3deg">E</span><span class="bead" style="--tilt:-1deg">R</span><span class="bead sp"></span><span class="bead" style="--tilt:2deg">C</span><span class="bead" style="--tilt:-3deg">A</span><span class="bead" style="--tilt:1deg">M</span></span>
+    <span class="title" aria-label="REFER CAM"><span class="bead" style="--tilt:-3deg">R</span><span class="bead" style="--tilt:2deg">E</span><span class="bead" style="--tilt:-2deg">F</span><span class="bead" style="--tilt:3deg">E</span><span class="bead" style="--tilt:-1deg">R</span><span class="bead sp"></span><span class="bead" style="--tilt:2deg">C</span><span class="bead" style="--tilt:-3deg">A</span><span class="bead" style="--tilt:1deg">M</span><span class="pro-badge hidden" id="proBadge"><span class="pb w">P</span><span class="pb b">R</span><span class="pb w">O</span></span></span>
     <div class="seg" id="shootMode">
       <button id="modeInstant" class="on">바로 콜라주</button>
       <button id="modeBurst">연속 촬영</button>
@@ -901,6 +908,7 @@ try {
   if (isPro) showWm = localStorage.getItem('refercam_wm') !== '0';
 } catch (e) {}
 $('tglWm').classList.toggle('on', showWm);
+$('proBadge').classList.toggle('hidden', !isPro);
 function setWm(on) {
   showWm = on;
   $('tglWm').classList.toggle('on', on);
@@ -924,6 +932,7 @@ $('btnIosPay').onclick = () => {
       b.disabled = false; b.textContent = t('pay.btn');
       isPro = true;
       try { localStorage.setItem('refercam_pro', '1'); } catch (e) {}
+      $('proBadge').classList.toggle('hidden', false);
       setWm(false);
     }, 600);
   }, 800);
