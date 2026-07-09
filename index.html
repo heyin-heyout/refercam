@@ -2,39 +2,42 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <title>REFER CAM 프로토타입</title>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@800&display=swap" rel="stylesheet">
 <style>
+  :root { --bg:#0c0c0d; --fg:#f2f2f0; --mut:#9a9a94; --mut2:#83837d; --line:rgba(255,255,255,0.2); --line-soft:rgba(255,255,255,0.14); --line-softer:rgba(255,255,255,0.07); --chip-line:rgba(255,255,255,0.18); --chip-fg:#b7b7b0; --inv-bg:#f2f2f0; --inv-fg:#0c0c0d; --seg:rgba(255,255,255,0.08); --btn-bg:rgba(255,255,255,0.06); --tgl:rgba(255,255,255,0.16); --scrim:rgba(0,0,0,0.82); --sheet:#17171a; --shutter:rgba(255,255,255,0.85); }
+  body.light { --bg:#f4f2ec; --fg:#1b1a16; --mut:#77756c; --mut2:#8a887f; --line:rgba(0,0,0,0.25); --line-soft:rgba(0,0,0,0.14); --line-softer:rgba(0,0,0,0.09); --chip-line:rgba(0,0,0,0.2); --chip-fg:#55534b; --inv-bg:#1b1a16; --inv-fg:#f7f7f4; --seg:rgba(0,0,0,0.07); --btn-bg:rgba(0,0,0,0.05); --tgl:rgba(0,0,0,0.18); --scrim:rgba(0,0,0,0.45); --sheet:#fbfaf6; --shutter:rgba(20,20,16,0.8); }
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; background: #0c0c0d; color: #f2f2f0; font-family: -apple-system, "Apple SD Gothic Neo", sans-serif; }
+  html, body { height: 100%; overflow: hidden; overscroll-behavior: none; background: var(--bg); color: var(--fg); font-family: -apple-system, "Apple SD Gothic Neo", sans-serif; }
   #app { max-width: 430px; margin: 0 auto; height: 100dvh; display: flex; flex-direction: column; }
 
   .topbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 10px 14px; }
   .topbar .title { display: flex; gap: 3px; align-items: center; }
   .bead { width: 19px; height: 19px; background: #f7f7f4; color: #111; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; font-family: "Baloo 2", sans-serif; font-weight: 800; font-size: 12px; box-shadow: inset 0 -2.5px 0 rgba(0,0,0,0.18); transform: rotate(var(--tilt, 0deg)); }
-  .bead.sp { background: transparent; box-shadow: none; width: 5px; }
-  .seg { display: flex; background: rgba(255,255,255,0.08); border-radius: 999px; padding: 2px; }
-  .seg button { border: 0; background: transparent; color: #9a9a94; font-size: 11px; padding: 5px 10px; border-radius: 999px; white-space: nowrap; }
-  .seg button.on { background: #f2f2f0; color: #0c0c0d; font-weight: 600; }
-  .mini { border: 1px solid rgba(255,255,255,0.2); background: transparent; color: #f2f2f0; padding: 6px 9px; border-radius: 10px; display: inline-flex; align-items: center; }
+  .bead.sp { background: transparent; box-shadow: none; width: 5px; border: 0; }
+  body.light .bead { border: 1px solid rgba(0,0,0,0.14); }
+  .seg { display: flex; background: var(--seg); border-radius: 999px; padding: 2px; }
+  .seg button { border: 0; background: transparent; color: var(--mut); font-size: 11px; padding: 5px 10px; border-radius: 999px; white-space: nowrap; }
+  .seg button.on { background: var(--inv-bg); color: var(--inv-fg); font-weight: 600; }
+  .mini { border: 1px solid var(--line); background: transparent; color: var(--fg); padding: 6px 9px; border-radius: 10px; display: inline-flex; align-items: center; }
 
   .stage-outer { flex: 1; display: flex; align-items: center; justify-content: center; margin: 0 12px; min-height: 0; }
-  .stage { position: relative; border-radius: 18px; overflow: hidden; background: #17171a; max-width: 100%; max-height: 100%; width: 100%; }
+  .stage { position: relative; border-radius: 18px; overflow: hidden; background: #17171a; flex-shrink: 0; }
   video, #simScene { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .countdown { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 96px; font-weight: 700; color: rgba(255,255,255,0.92); text-shadow: 0 2px 18px rgba(0,0,0,0.5); pointer-events: none; }
   .chiprow { display: flex; align-items: center; gap: 6px; overflow-x: auto; padding: 4px 20px 0; scrollbar-width: none; }
   .chiprow::-webkit-scrollbar { display: none; }
-  .chiprow .lb { font-size: 11px; color: #83837d; white-space: nowrap; margin-right: 2px; }
-  .chip { border: 1px solid rgba(255,255,255,0.18); background: transparent; color: #b7b7b0; font-size: 11px; padding: 5px 10px; border-radius: 999px; white-space: nowrap; }
-  .chip.on { background: #f2f2f0; color: #0c0c0d; border-color: transparent; font-weight: 600; }
+  .chiprow .lb { font-size: 11px; color: var(--mut2); white-space: nowrap; margin-right: 2px; }
+  .chip { border: 1px solid var(--chip-line); background: transparent; color: var(--chip-fg); font-size: 11px; padding: 5px 10px; border-radius: 999px; white-space: nowrap; }
+  .chip.on { background: var(--inv-bg); color: var(--inv-fg); border-color: transparent; font-weight: 600; }
   .chip { display: inline-flex; align-items: center; gap: 6px; }
   .rbox { border: 1.5px solid currentColor; border-radius: 2px; flex-shrink: 0; }
-  .set-sec { font-size: 12px; color: #83837d; margin: 18px 4px 6px; }
-  .set-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 4px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+  .set-sec { font-size: 12px; color: var(--mut2); margin: 18px 4px 6px; }
+  .set-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 4px; border-bottom: 1px solid var(--line-softer); }
   .set-row .t { font-size: 15px; }
-  .set-row .d { font-size: 12px; color: #83837d; margin-top: 3px; }
-  .toggle { width: 50px; height: 30px; border-radius: 999px; background: rgba(255,255,255,0.16); border: 0; position: relative; transition: background 0.15s; flex-shrink: 0; }
+  .set-row .d { font-size: 12px; color: var(--mut2); margin-top: 3px; }
+  .toggle { width: 50px; height: 30px; border-radius: 999px; background: var(--tgl); border: 0; position: relative; transition: background 0.15s; flex-shrink: 0; }
   .toggle::after { content: ''; position: absolute; top: 3px; left: 3px; width: 24px; height: 24px; border-radius: 50%; background: #f2f2f0; transition: left 0.15s; }
   .toggle.on { background: #7ed957; }
   .toggle.on::after { left: 23px; }
@@ -56,9 +59,9 @@
 
   .controls { padding: 10px 20px 4px; }
   .slider-row { display: flex; align-items: center; gap: 12px; }
-  .slider-row label { font-size: 12px; color: #9a9a94; white-space: nowrap; }
+  .slider-row label { font-size: 12px; color: var(--mut); white-space: nowrap; }
   input[type="range"] { flex: 1; accent-color: #f2b544; height: 28px; }
-  .slider-row .val { font-size: 12px; color: #f2f2f0; width: 38px; text-align: right; font-variant-numeric: tabular-nums; }
+  .slider-row .val { font-size: 12px; color: var(--fg); width: 38px; text-align: right; font-variant-numeric: tabular-nums; }
 
   .bottombar { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 8px 24px calc(16px + env(safe-area-inset-bottom)); }
   .coach { position: absolute; left: 12px; bottom: calc(100% + 2px); background: #f7f7f4; color: #111; font-size: 13px; font-weight: 600; padding: 10px 14px; border-radius: 12px; white-space: nowrap; animation: bob 1.4s ease-in-out infinite; z-index: 5; }
@@ -70,11 +73,11 @@
   @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
   @media (prefers-reduced-motion: reduce) { .gesture-coach .card { animation: none; } }
   @media (prefers-reduced-motion: reduce) { .coach { animation: none; } }
-  .sidebtn { display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 14px; border: 1px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06); color: #f2f2f0; font-size: 12px; line-height: 1.25; position: relative; }
+  .sidebtn { display: inline-flex; align-items: center; justify-content: center; width: 52px; height: 52px; border-radius: 14px; border: 1px solid var(--line); background: var(--btn-bg); color: var(--fg); font-size: 12px; line-height: 1.25; position: relative; }
   .sidebtn.ghost { visibility: hidden; }
   .sidebtn .dot { position: absolute; top: -6px; right: -6px; min-width: 20px; height: 20px; border-radius: 999px; background: #f2b544; color: #0c0c0d; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
-  .shutter { width: 72px; height: 72px; border-radius: 50%; border: 4px solid rgba(255,255,255,0.85); background: transparent; padding: 4px; }
-  .shutter > span { display: block; width: 100%; height: 100%; border-radius: 50%; background: #f2f2f0; }
+  .shutter { width: 72px; height: 72px; border-radius: 50%; border: 4px solid var(--shutter); background: transparent; padding: 4px; }
+  .shutter > span { display: block; width: 100%; height: 100%; border-radius: 50%; background: var(--inv-bg); }
   .shutter:active > span { transform: scale(0.9); }
   .shutter.video > span { background: #e5484d; }
   .shutter.rec > span { background: #e5484d; border-radius: 12px; transform: scale(0.55); }
@@ -85,25 +88,25 @@
   #resultSheet.video-mode .prev-wrap.vid-only { display: flex !important; }
   #resultSheet video { max-width: 100%; max-height: 52dvh; border-radius: 12px; }
 
-  .sheet { position: fixed; inset: 0; background: rgba(0,0,0,0.82); display: none; align-items: flex-end; justify-content: center; z-index: 30; }
+  .sheet { position: fixed; inset: 0; background: var(--scrim); display: none; align-items: flex-end; justify-content: center; z-index: 30; }
   .sheet.open { display: flex; }
-  .sheet-inner { width: 100%; max-width: 430px; background: #17171a; border-radius: 20px 20px 0 0; padding: 20px 20px calc(22px + env(safe-area-inset-bottom)); max-height: 92dvh; overflow-y: auto; }
+  .sheet-inner { width: 100%; max-width: 430px; background: var(--sheet); border-radius: 20px 20px 0 0; padding: 20px 20px calc(22px + env(safe-area-inset-bottom)); max-height: 92dvh; overflow-y: auto; }
   .sheet-inner h2 { font-size: 15px; font-weight: 600; margin-bottom: 14px; }
   .prev-wrap { border-radius: 12px; overflow: hidden; background: #0c0c0d; display: flex; justify-content: center; }
   .prev-wrap img, .prev-wrap canvas { max-width: 100%; max-height: 52dvh; display: block; }
   .btn-row { display: flex; gap: 10px; margin-top: 16px; }
-  .btn { flex: 1; padding: 13px 0; border-radius: 12px; border: 1px solid rgba(255,255,255,0.2); background: transparent; color: #f2f2f0; font-size: 14px; }
-  .btn.primary { background: #f2f2f0; color: #0c0c0d; border-color: transparent; font-weight: 600; }
-  .hint { font-size: 12px; color: #83837d; margin-top: 12px; line-height: 1.6; }
+  .btn { flex: 1; padding: 13px 0; border-radius: 12px; border: 1px solid var(--line); background: transparent; color: var(--fg); font-size: 14px; }
+  .btn.primary { background: var(--inv-bg); color: var(--inv-fg); border-color: transparent; font-weight: 600; }
+  .hint { font-size: 12px; color: var(--mut2); margin-top: 12px; line-height: 1.6; }
   .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .grid img { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 10px; border: 2px solid transparent; }
   .grid img.sel { border-color: #f2b544; }
   .board-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
   .thumb { position: relative; }
-  .thumb > img { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 10px; border: 1px solid rgba(255,255,255,0.14); background: #f7f7f4; display: block; }
+  .thumb > img { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 10px; border: 1px solid var(--line-soft); background: #f7f7f4; display: block; }
   .thumb .del { position: absolute; top: -6px; right: -6px; width: 22px; height: 22px; border-radius: 50%; background: #f7f7f4; color: #111; border: 0; font-size: 13px; font-weight: 700; line-height: 1; }
   .thumb .tag { position: absolute; left: 6px; bottom: 6px; font-size: 10px; background: rgba(12,12,13,0.72); color: #f2f2f0; border-radius: 999px; padding: 2px 8px; }
-  .empty { font-size: 13px; color: #83837d; padding: 14px 0; text-align: center; }
+  .empty { font-size: 13px; color: var(--mut2); padding: 14px 0; text-align: center; }
   .hidden { display: none !important; }
 </style>
 </head>
@@ -236,6 +239,14 @@
       <div><div class="t">무음 셔터</div><div class="d">무보정 캡처와 함께 기본 제공돼요</div></div>
       <button class="toggle on" id="tglSilent" aria-label="무음 셔터"></button>
     </div>
+    <div class="set-sec">화면</div>
+    <div class="set-row">
+      <div><div class="t">테마</div><div class="d">뷰파인더는 항상 어둡게 유지돼요</div></div>
+      <div class="seg" id="themeSeg">
+        <button class="on" data-th="dark">다크</button>
+        <button data-th="light">라이트</button>
+      </div>
+    </div>
     <div class="set-sec">콜라주</div>
     <div class="set-row">
       <div><div class="t">워터마크 표시</div><div class="d">콜라주 하단 로고</div></div>
@@ -291,6 +302,16 @@ let refImg = null, flipped = false, ovMode = 'photo', shootBurst = false;
 let camOn = false, facing = 'environment', stream = null;
 let shots = [], selShot = -1;
 let capRatio = { w: 3, h: 4 }, timerSec = 0, lastShot = null, collRatio = { w: 4, h: 5 }, collM = 40;
+function sizeStage() {
+  const outer = document.querySelector('.stage-outer');
+  const st = document.getElementById('stage');
+  const bw = outer.clientWidth, bh = outer.clientHeight;
+  const r = capRatio.w / capRatio.h;
+  let w = bw, h = w / r;
+  if (h > bh) { h = bh; w = h * r; }
+  st.style.width = Math.floor(w) + 'px';
+  st.style.height = Math.floor(h) + 'px';
+}
 let segModel = null, segReady = false;
 
 function initSeg() {
@@ -577,6 +598,13 @@ $('btnSettings').onclick = () => $('settingsSheet').classList.add('open');
 $('btnSettingsClose').onclick = () => $('settingsSheet').classList.remove('open');
 $('tglMirrorSave').onclick = () => { mirrorSave = !mirrorSave; $('tglMirrorSave').classList.toggle('on', mirrorSave); };
 $('tglSilent').onclick = () => $('tglSilent').classList.toggle('on');
+function applyTheme(th) {
+  document.body.classList.toggle('light', th === 'light');
+  $('themeSeg').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.th === th));
+  try { localStorage.setItem('refercam_theme', th); } catch (e) {}
+}
+$('themeSeg').querySelectorAll('button').forEach(b => { b.onclick = () => applyTheme(b.dataset.th); });
+try { applyTheme(localStorage.getItem('refercam_theme') || 'dark'); } catch (e) {}
 
 function bindChips(rowId, onPick) {
   $(rowId).querySelectorAll('.chip').forEach(ch => {
@@ -629,7 +657,7 @@ function stopRec() {
 bindChips('ratioRow', d => {
   const [w, h] = d.r.split(',').map(Number);
   capRatio = { w, h };
-  $('stage').style.aspectRatio = `${w} / ${h}`;
+  sizeStage();
   requestAnimationFrame(() => { if (refImg) fitOverlay(); });
 });
 bindChips('timerRow', d => { timerSec = Number(d.t); });
@@ -849,7 +877,10 @@ stage.addEventListener('click', e => {
   if (refImg && now - lastTap < 320) fitOverlay();
   lastTap = now;
 });
-window.addEventListener('resize', () => { if (refImg && ov.s === 1) fitOverlay(); });
+window.addEventListener('resize', () => { sizeStage(); if (refImg && ov.s === 1) fitOverlay(); });
+window.addEventListener('orientationchange', () => setTimeout(() => { sizeStage(); if (refImg) fitOverlay(); }, 350));
+if (window.visualViewport) visualViewport.addEventListener('resize', () => sizeStage());
+sizeStage();
 </script>
 </body>
 </html>
