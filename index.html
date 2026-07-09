@@ -108,6 +108,20 @@
   .btn { flex: 1; padding: 13px 0; border-radius: 12px; border: 1px solid var(--line); background: transparent; color: var(--fg); font-size: 14px; }
   .btn.primary { background: var(--inv-bg); color: var(--inv-fg); border-color: transparent; font-weight: 600; }
   .hint { font-size: 12px; color: var(--mut2); margin-top: 12px; line-height: 1.6; }
+  .ios-pay { width: 100%; max-width: 430px; background: var(--sheet); border-radius: 20px 20px 0 0; padding-bottom: calc(16px + env(safe-area-inset-bottom)); }
+  .ios-pay-head { display: flex; justify-content: space-between; align-items: center; padding: 14px 18px; border-bottom: 1px solid var(--line-softer); }
+  .ios-pay-store { font-weight: 700; font-size: 15px; }
+  .ios-pay-cancel { border: 0; background: transparent; color: #0a84ff; font-size: 15px; }
+  .ios-pay-app { display: flex; gap: 12px; align-items: center; padding: 16px 18px 12px; }
+  .ios-pay-icon { width: 44px; height: 44px; border-radius: 10px; background: #f7f7f4; color: #111; display: flex; align-items: center; justify-content: center; font-family: "Baloo 2", sans-serif; font-weight: 800; font-size: 22px; box-shadow: inset 0 -3px 0 rgba(0,0,0,0.18); flex-shrink: 0; }
+  body.light .ios-pay-icon { border: 1px solid rgba(0,0,0,0.14); }
+  .ios-pay-name { font-size: 15px; font-weight: 600; }
+  .ios-pay-sub { font-size: 12px; color: var(--mut2); margin-top: 2px; }
+  .ios-pay-row { display: flex; justify-content: space-between; font-size: 13px; color: var(--mut); padding: 10px 18px; border-top: 1px solid var(--line-softer); }
+  .ios-pay-row b { color: var(--fg); font-weight: 600; }
+  .ios-pay-btn { display: block; width: calc(100% - 36px); margin: 16px 18px 0; padding: 14px 0; border: 0; border-radius: 12px; background: #0a84ff; color: #fff; font-size: 15px; font-weight: 600; }
+  .ios-pay-btn:disabled { opacity: 0.75; }
+  .ios-pay-note { font-size: 11px; color: var(--mut2); text-align: center; margin-top: 10px; }
   .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .grid img { width: 100%; aspect-ratio: 3/4; object-fit: cover; border-radius: 10px; border: 2px solid transparent; }
   .grid img.sel { border-color: #f2b544; }
@@ -284,6 +298,26 @@
   </div>
 </div>
 
+<div class="sheet" id="iosPaySheet">
+  <div class="ios-pay">
+    <div class="ios-pay-head">
+      <span class="ios-pay-store">App Store</span>
+      <button class="ios-pay-cancel" id="btnIosCancel">취소</button>
+    </div>
+    <div class="ios-pay-app">
+      <div class="ios-pay-icon">R</div>
+      <div>
+        <div class="ios-pay-name">REFER CAM Pro</div>
+        <div class="ios-pay-sub">월간 구독 · 언제든 해지 가능</div>
+      </div>
+    </div>
+    <div class="ios-pay-row"><span class="pay-account-lb">계정</span><b>hey•••@icloud.com</b></div>
+    <div class="ios-pay-row"><span class="pay-price-lb">가격</span><b class="pay-price-v">₩3,900/월</b></div>
+    <button class="ios-pay-btn" id="btnIosPay">구독하기</button>
+    <p class="ios-pay-note">프로토타입 화면이라 실제 결제는 되지 않아요.</p>
+  </div>
+</div>
+
 <div class="sheet" id="resultSheet">
   <div class="sheet-inner">
     <h2>콜라주 완성</h2>
@@ -401,6 +435,15 @@ const STR = {
   'set.wmD':          { ko: '콜라주 하단 로고 · 끄기는 Pro 전용', en: 'Logo at the bottom of collages · Turn off with Pro' },
   'pro.wmMsg':        { ko: '워터마크 제거는 Pro에서 가능해요.', en: 'Removing the watermark is available in Pro.' },
   'pro.upgrade':      { ko: 'Pro 시작하기', en: 'Get Pro' },
+  'pay.cancel':       { ko: '취소', en: 'Cancel' },
+  'pay.sub':          { ko: '월간 구독 · 언제든 해지 가능', en: 'Monthly · Cancel anytime' },
+  'pay.account':      { ko: '계정', en: 'Account' },
+  'pay.price':        { ko: '가격', en: 'Price' },
+  'pay.priceV':       { ko: '₩3,900/월', en: '$2.99/mo' },
+  'pay.btn':          { ko: '구독하기', en: 'Subscribe' },
+  'pay.processing':   { ko: '처리 중…', en: 'Processing…' },
+  'pay.done':         { ko: '완료', en: 'Done' },
+  'pay.note':         { ko: '프로토타입 화면이라 실제 결제는 되지 않아요.', en: 'Prototype only — no real charge.' },
   'result.title':     { ko: '콜라주 완성', en: 'Collage ready' },
   'result.layout':    { ko: '방향', en: 'Layout' },
   'result.portrait':  { ko: '세로', en: 'Portrait' },
@@ -498,6 +541,13 @@ function applyI18n() {
   set('#proSheet .pro-msg', 'pro.wmMsg');
   set('#btnProClose', 'btn.close');
   set('#btnProUpgrade', 'pro.upgrade');
+  set('#btnIosCancel', 'pay.cancel');
+  set('#iosPaySheet .ios-pay-sub', 'pay.sub');
+  set('#iosPaySheet .pay-account-lb', 'pay.account');
+  set('#iosPaySheet .pay-price-lb', 'pay.price');
+  set('#iosPaySheet .pay-price-v', 'pay.priceV');
+  set('#btnIosPay', 'pay.btn');
+  set('#iosPaySheet .ios-pay-note', 'pay.note');
   set('#resultSheet h2', 'result.title');
   set('#collRatioRow .lb', 'result.layout');
   set('#orP', 'result.portrait');
@@ -737,6 +787,22 @@ function drawBeadmark(ctx, right, baseY) {
   ctx.restore();
 }
 
+/* 원본 저장용: 사진 크기에 맞춰 워터마크를 찍은 복사본을 돌려줌 (워터마크 꺼짐이면 원본 그대로) */
+function stampWm(canvas) {
+  if (!showWm) return canvas;
+  const c = document.createElement('canvas');
+  c.width = canvas.width; c.height = canvas.height;
+  const ctx = c.getContext('2d');
+  ctx.drawImage(canvas, 0, 0);
+  const s = Math.max(0.5, Math.min(c.width, c.height) / 1080);
+  const inset = 28 * s;
+  ctx.save();
+  ctx.scale(s, s);
+  drawBeadmark(ctx, (c.width - inset) / s, (c.height - inset) / s);
+  ctx.restore();
+  return c;
+}
+
 function makeCollage(shotCanvas) {
   lastShot = shotCanvas;
   const r = collRatio.w / collRatio.h;
@@ -845,11 +911,22 @@ $('tglWm').onclick = () => {
   setWm(!showWm);
 };
 $('btnProClose').onclick = () => $('proSheet').classList.remove('open');
-$('btnProUpgrade').onclick = () => {
-  isPro = true;
-  try { localStorage.setItem('refercam_pro', '1'); } catch (e) {}
-  $('proSheet').classList.remove('open');
-  setWm(false);
+$('btnProUpgrade').onclick = () => $('iosPaySheet').classList.add('open');
+$('btnIosCancel').onclick = () => $('iosPaySheet').classList.remove('open');
+$('btnIosPay').onclick = () => {
+  const b = $('btnIosPay');
+  b.disabled = true; b.textContent = t('pay.processing');
+  setTimeout(() => {
+    b.textContent = '✓ ' + t('pay.done');
+    setTimeout(() => {
+      $('iosPaySheet').classList.remove('open');
+      $('proSheet').classList.remove('open');
+      b.disabled = false; b.textContent = t('pay.btn');
+      isPro = true;
+      try { localStorage.setItem('refercam_pro', '1'); } catch (e) {}
+      setWm(false);
+    }, 600);
+  }, 800);
 };
 
 function bindChips(rowId, onPick) {
@@ -1046,7 +1123,7 @@ $('btnSaveOrig').onclick = () => {
   if (!lastShot) return;
   const a = document.createElement('a');
   a.download = 'refercam_shot.jpg';
-  a.href = lastShot.toDataURL('image/jpeg', 0.95);
+  a.href = stampWm(lastShot).toDataURL('image/jpeg', 0.95);
   a.click();
 };
 
