@@ -40,8 +40,8 @@
     .mini svg { width: 18px; height: 18px; }
   }
 
-  .stage-outer { flex: 1; display: flex; align-items: center; justify-content: center; margin: 0 12px; min-height: 0; }
-  .stage { position: relative; border-radius: 18px; overflow: hidden; background: #17171a; flex-shrink: 0; }
+  .stage-outer { flex: 1; display: flex; align-items: center; justify-content: center; margin: 0; min-height: 0; }
+  .stage { position: relative; overflow: hidden; background: #17171a; flex-shrink: 0; }
   video, #simScene { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
   .countdown { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 96px; font-weight: 700; color: rgba(255,255,255,0.92); text-shadow: 0 2px 18px rgba(0,0,0,0.5); pointer-events: none; }
   .chiprow { display: flex; align-items: center; gap: 6px; overflow-x: auto; padding: 4px 20px 0; scrollbar-width: none; }
@@ -65,7 +65,9 @@
   .flip-x { transform: scaleX(-1); }
 
   .stage-hint { position: absolute; top: 12px; left: 50%; transform: translateX(-50%); background: rgba(12,12,13,0.6); border-radius: 999px; padding: 5px 14px; font-size: 11px; color: #b7b7b0; white-space: nowrap; backdrop-filter: blur(6px); }
-  .mode-pill { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; background: rgba(12,12,13,0.72); border: 1px solid rgba(255,255,255,0.16); border-radius: 999px; padding: 3px; backdrop-filter: blur(8px); }
+  .stage-bottom { position: absolute; bottom: 12px; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; gap: 8px; pointer-events: none; }
+  .stage-bottom > * { pointer-events: auto; }
+  .mode-pill { display: flex; background: rgba(12,12,13,0.72); border: 1px solid rgba(255,255,255,0.16); border-radius: 999px; padding: 3px; backdrop-filter: blur(8px); }
   .mode-pill button { border: 0; background: transparent; color: #b7b7b0; font-size: 13px; padding: 6px 16px; border-radius: 999px; }
   .mode-pill button.on { background: #f2f2f0; color: #0c0c0d; }
   .ref-chip { position: absolute; top: 44px; left: 12px; width: 46px; height: 60px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.28); overflow: hidden; background: #222; }
@@ -75,11 +77,14 @@
   .tray img { width: 34px; height: 44px; object-fit: cover; border-radius: 7px; border: 1px solid rgba(255,255,255,0.35); }
   .tray .count { font-size: 11px; color: #f2f2f0; background: rgba(12,12,13,0.7); border-radius: 999px; padding: 3px 8px; }
 
-  .controls { padding: 10px 20px 4px; }
   .slider-row { display: flex; align-items: center; gap: 12px; }
   .slider-row label { font-size: 12px; color: var(--mut); white-space: nowrap; }
   input[type="range"] { flex: 1; accent-color: #f2b544; height: 28px; }
   .slider-row .val { font-size: 12px; color: var(--fg); width: 38px; text-align: right; font-variant-numeric: tabular-nums; }
+  /* 투명도 슬라이더: 뷰파인더 하단 반투명 캡슐 (iOS 풀블리드 사양과 동일 — 뷰파인더 내부는 항상 다크) */
+  .stage-bottom #opacityRow { width: calc(100% - 40px); background: rgba(12,12,13,0.45); border-radius: 999px; padding: 8px 16px; backdrop-filter: blur(6px); }
+  .stage-bottom #opacityRow label { color: #b7b7b0; }
+  .stage-bottom #opacityRow .val { color: #f2f2f0; }
 
   .bottombar { position: relative; display: flex; align-items: center; justify-content: space-between; padding: 8px 24px calc(16px + env(safe-area-inset-bottom)); }
   .coach { position: absolute; left: 12px; bottom: calc(100% + 2px); background: #f7f7f4; color: #111; font-size: 13px; font-weight: 600; padding: 10px 14px; border-radius: 12px; white-space: nowrap; animation: bob 1.4s ease-in-out infinite; z-index: 5; }
@@ -164,9 +169,16 @@
     </div>
     <div class="stage-hint" id="stageHint">레퍼런스 없이도 무음·무보정 카메라로 촬영돼요</div>
     <div class="ref-chip hidden" id="refChip"><img id="refChipImg" alt="현재 레퍼런스"></div>
-    <div class="mode-pill hidden" id="modePill">
-      <button id="ovPhoto" class="on">사진</button>
-      <button id="ovLine">라인</button>
+    <div class="stage-bottom">
+      <div class="mode-pill hidden" id="modePill">
+        <button id="ovPhoto" class="on">사진</button>
+        <button id="ovLine">라인</button>
+      </div>
+      <div class="slider-row" id="opacityRow" style="visibility:hidden;">
+        <label for="opacity">투명도</label>
+        <input type="range" id="opacity" min="0" max="100" value="55" step="1">
+        <span class="val" id="opacityVal">55%</span>
+      </div>
     </div>
     <div class="tray hidden" id="tray"><img id="trayThumb" alt=""><span class="count" id="trayCount">1</span></div>
     <div class="countdown hidden" id="countdown"></div>
@@ -201,14 +213,6 @@
     <button class="chip" data-t="3">3초</button>
     <button class="chip" data-t="5">5초</button>
     <button class="chip" data-t="10">10초</button>
-  </div>
-
-  <div class="controls">
-    <div class="slider-row" id="opacityRow" style="visibility:hidden;">
-      <label for="opacity">투명도</label>
-      <input type="range" id="opacity" min="0" max="100" value="55" step="1">
-      <span class="val" id="opacityVal">55%</span>
-    </div>
   </div>
 
   <div class="bottombar">
@@ -573,7 +577,7 @@ applyI18n();
 /* ===== 언어 대응 끝 ===== */
 
 let refImg = null, flipped = false, ovMode = 'photo', shootBurst = false;
-let camOn = false, facing = 'environment', stream = null;
+let camOn = false, facing = 'environment', actualFacing = 'environment', stream = null;
 let shots = [], selShot = -1;
 let capRatio = { w: 3, h: 4 }, timerSec = 0, lastShot = null, collRatio = { w: 4, h: 5 }, collM = 40;
 function sizeStage() {
@@ -709,6 +713,10 @@ async function startCamera() {
     $('cam').classList.remove('hidden');
     $('simScene').classList.add('hidden');
     camOn = true;
+    // 실제 잡힌 카메라 방향 — 요청과 다를 수 있음(노트북은 후면이 없어 전면 웹캠으로 폴백됨)
+    const trackSet = stream.getVideoTracks()[0].getSettings();
+    actualFacing = trackSet.facingMode === 'environment' ? 'environment' : 'user';
+    applyPreviewMirror();
   } catch (e) {
     camOn = false;
     $('stageHint').textContent = t('cam.fail');
@@ -734,7 +742,7 @@ function captureShot() {
   const ch = r >= 1 ? Math.round(long / r) : long;
   const c = document.createElement('canvas'); c.width = cw; c.height = ch;
   const ctx = c.getContext('2d');
-  if (isMirroredCapture()) { ctx.translate(cw, 0); ctx.scale(-1, 1); }
+  if (src === $('cam') && isMirroredCapture()) { ctx.translate(cw, 0); ctx.scale(-1, 1); }
   drawCover(ctx, src, sw, sh, 0, 0, cw, ch);
   return c;
 }
@@ -878,11 +886,11 @@ function showGestureCoach() {
   setTimeout(dismiss, 6000);
 }
 function applyPreviewMirror() {
-  const m = facing === 'user';
+  const m = actualFacing === 'user';
   $('cam').classList.toggle('flip-x', m);
 }
 function isMirroredCapture() {
-  return facing === 'user' && mirrorSave;
+  return actualFacing === 'user' && mirrorSave;
 }
 $('btnSettings').onclick = () => $('settingsSheet').classList.add('open');
 $('btnSettingsClose').onclick = () => $('settingsSheet').classList.remove('open');
@@ -1121,7 +1129,7 @@ $('fileScene').onchange = e => {
 $('opacity').oninput = applyOverlay;
 $('ovPhoto').onclick = () => { ovMode = 'photo'; $('ovPhoto').classList.add('on'); $('ovLine').classList.remove('on'); applyOverlay(); };
 $('ovLine').onclick = () => { ovMode = 'line'; $('ovLine').classList.add('on'); $('ovPhoto').classList.remove('on'); applyOverlay(); };
-$('btnSwitch').onclick = () => { facing = facing === 'environment' ? 'user' : 'environment'; startCamera().then?.(applyPreviewMirror); applyPreviewMirror(); };
+$('btnSwitch').onclick = () => { facing = facing === 'environment' ? 'user' : 'environment'; startCamera(); };
 $('btnRetake').onclick = () => { $('vidPreview').pause?.(); $('resultSheet').classList.remove('open', 'video-mode'); };
 $('btnSave').onclick = () => {
   const a = document.createElement('a');
@@ -1209,6 +1217,13 @@ stage.addEventListener('wheel', e => {
   ov.s = ns;
   renderOv();
 }, { passive: false });
+
+// 뷰파인더 하단 캡슐(모드 필·투명도 슬라이더) 위 입력은 오버레이 핀치·드래그·탭으로 전달 금지
+const stageBottom = document.querySelector('.stage-bottom');
+['touchstart', 'touchmove', 'touchend', 'mousedown', 'wheel', 'click'].forEach(ev =>
+  stageBottom.addEventListener(ev, e => e.stopPropagation()));
+// 오버레이가 스테이지 밖으로 나간 상태에서 캡슐에 포커스가 가면 overflow:hidden 스테이지가 몰래 스크롤됨 — 항상 0 고정
+stage.addEventListener('scroll', () => { stage.scrollLeft = 0; stage.scrollTop = 0; });
 
 let lastTap = 0;
 stage.addEventListener('click', e => {
